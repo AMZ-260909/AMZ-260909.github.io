@@ -7,7 +7,7 @@ function renderChapterText() {
   const paragraphs = document.createDocumentFragment();
 
   if (text) {
-    text.split(/\n[\t ]*\n(?:[\t ]*\n)*/).forEach((paragraph) => {
+    text.split(/\n[^\S\n]*\n(?:[^\S\n]*\n)*/).forEach((paragraph) => {
       const p = document.createElement("p");
       p.textContent = paragraph;
       paragraphs.appendChild(p);
