@@ -134,6 +134,7 @@ body {
   font-size: clamp(2.5rem, 7vw, 6rem);
   margin-bottom: 50px;
   letter-spacing: .12em;
+  white-space: nowrap;
 }
 
 .chapter-directory {
@@ -265,7 +266,8 @@ body {
 
   .story-title {
     margin-bottom: 38px;
-    font-size: clamp(2rem, 12vw, 4rem);
+    font-size: clamp(1.8rem, 9vw, 3.2rem);
+    white-space: nowrap;
   }
 
   .chapter-directory { gap: 13px 15px; }
