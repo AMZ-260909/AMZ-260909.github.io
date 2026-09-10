@@ -1,53 +1,66 @@
-// =========================================================
-// 这里是小特效。删掉任何一段都不会影响小说正文。
-// =========================================================
+function createRandomStars() {
+  const field = document.querySelector(".starfield");
+  if (!field) return;
 
-// 夜间模式
-const themeButtons = document.querySelectorAll("[data-theme-toggle]");
-themeButtons.forEach(btn => {
-  btn.addEventListener("click", () => {
-    document.body.classList.toggle("dark");
-    localStorage.setItem("darkMode", document.body.classList.contains("dark"));
-  });
-});
-if (localStorage.getItem("darkMode") === "true") {
-  document.body.classList.add("dark");
+  field.innerHTML = "";
+
+  const area = window.innerWidth * window.innerHeight;
+  const count = Math.max(45, Math.min(120, Math.floor(area / 13000)));
+
+  for (let i = 0; i < count; i++) {
+    const star = document.createElement("span");
+    star.className = "star";
+
+    const roll = Math.random();
+
+    if (roll > 0.94) {
+      star.classList.add("cross");
+      star.textContent = Math.random() > 0.5 ? "✦" : "✧";
+    } else if (roll > 0.80) {
+      star.classList.add("big");
+    }
+
+    const size = (Math.random() * 1.5 + 0.7).toFixed(2);
+
+    star.style.left = (Math.random() * 100).toFixed(2) + "%";
+    star.style.top = (Math.random() * 100).toFixed(2) + "%";
+    star.style.width = size + "px";
+    star.style.height = size + "px";
+    star.style.animationDuration = (1.8 + Math.random() * 4.8).toFixed(2) + "s";
+    star.style.animationDelay = (-Math.random() * 6).toFixed(2) + "s";
+    star.style.opacity = (0.2 + Math.random() * 0.7).toFixed(2);
+
+    field.appendChild(star);
+  }
 }
 
-// 字号调节
+createRandomStars();
+
+let resizeTimer;
+window.addEventListener("resize", () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(createRandomStars, 250);
+});
+
 let readerSize = Number(localStorage.getItem("readerSize")) || 19;
+
 function applyReaderSize() {
   document.documentElement.style.setProperty("--reader-size", readerSize + "px");
 }
 applyReaderSize();
 
-document.querySelectorAll("[data-font-plus]").forEach(btn => {
-  btn.addEventListener("click", () => {
+document.querySelectorAll("[data-font-plus]").forEach((button) => {
+  button.addEventListener("click", () => {
     readerSize = Math.min(readerSize + 1, 28);
     localStorage.setItem("readerSize", readerSize);
     applyReaderSize();
   });
 });
-document.querySelectorAll("[data-font-minus]").forEach(btn => {
-  btn.addEventListener("click", () => {
+
+document.querySelectorAll("[data-font-minus]").forEach((button) => {
+  button.addEventListener("click", () => {
     readerSize = Math.max(readerSize - 1, 14);
     localStorage.setItem("readerSize", readerSize);
     applyReaderSize();
   });
-});
-
-// 鼠标星星拖尾（手机不会触发）
-let lastStar = 0;
-document.addEventListener("mousemove", (e) => {
-  const now = Date.now();
-  if (now - lastStar < 55) return;
-  lastStar = now;
-
-  const star = document.createElement("span");
-  star.className = "trail-star";
-  star.textContent = ["✦","⋆","✧","♡"][Math.floor(Math.random() * 4)];
-  star.style.left = e.clientX + "px";
-  star.style.top = e.clientY + "px";
-  document.body.appendChild(star);
-  setTimeout(() => star.remove(), 850);
 });
