@@ -1,3 +1,10 @@
+// Load chapter likes relative to this shared script, including on nested pages.
+if (document.querySelector(".chapter-page")) {
+  const likesScript = document.createElement("script");
+  likesScript.src = new URL("likes.js", document.currentScript.src).href;
+  document.head.appendChild(likesScript);
+}
+
 function renderChapterText() {
   const source = document.getElementById("chapter-text");
   const reader = document.getElementById("reader");

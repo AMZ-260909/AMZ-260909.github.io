@@ -233,6 +233,48 @@ body {
 
 #reader p { white-space: pre-wrap; }
 
+.chapter-likes {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 36px;
+}
+
+.like-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 48px;
+  min-width: 88px;
+  padding: 8px 18px;
+  border: 1px solid var(--pink-dim);
+  border-radius: 999px;
+  background: rgba(230, 164, 194, .06);
+  color: var(--pink);
+  font: inherit;
+  cursor: pointer;
+}
+
+.like-button:focus-visible { outline: 2px solid var(--pink-light); outline-offset: 5px; }
+.like-button:hover:not(:disabled) { background: rgba(230, 164, 194, .16); }
+.like-button:disabled { cursor: default; }
+.like-button[aria-pressed="true"] { color: var(--pink-light); border-color: var(--pink); }
+.like-heart { position: relative; font-size: 28px; line-height: 1; animation: heartTwinkle 2.4s ease-in-out infinite alternate; }
+.like-heart::after { content: "✧"; position: absolute; top: -5px; right: -8px; font-size: 13px; }
+.like-count { font-variant-numeric: tabular-nums; }
+.like-status { min-height: 1.4em; color: var(--pink-dim); font-size: .75rem; }
+
+@keyframes heartTwinkle {
+  from { text-shadow: 0 0 3px rgba(243, 166, 201, .4); transform: scale(.96); }
+  to { text-shadow: 0 0 9px #f3a6c9, 0 0 18px rgba(243, 166, 201, .6); transform: scale(1.06); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .like-heart { animation: none; }
+}
+
 .chapter-nav {
   margin-top: 48px;
   display: grid;
