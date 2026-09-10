@@ -226,7 +226,10 @@ body {
   line-height: 1.95;
 }
 
-.reader p { margin: 0 0 1.45em; }
+.reader p {
+  margin: 0 0 1.45em;
+  text-indent: 2em;
+}
 
 #reader p { white-space: pre-wrap; }
 
