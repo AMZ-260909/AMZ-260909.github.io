@@ -224,6 +224,8 @@ body {
 
 .reader p { margin: 0 0 1.45em; }
 
+#reader p { white-space: pre-wrap; }
+
 .chapter-nav {
   margin-top: 48px;
   display: grid;

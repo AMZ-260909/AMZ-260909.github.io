@@ -1,3 +1,28 @@
+function renderChapterText() {
+  const source = document.getElementById("chapter-text");
+  const reader = document.getElementById("reader");
+  if (!source || !reader) return;
+
+  const text = source.textContent.replace(/\r\n?/g, "\n").trim();
+  const paragraphs = document.createDocumentFragment();
+
+  if (text) {
+    text.split(/\n[\t ]*\n(?:[\t ]*\n)*/).forEach((paragraph) => {
+      const p = document.createElement("p");
+      p.textContent = paragraph;
+      paragraphs.appendChild(p);
+    });
+  }
+
+  reader.replaceChildren(paragraphs);
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", renderChapterText);
+} else {
+  renderChapterText();
+}
+
 function createRandomStars() {
   const field = document.querySelector(".starfield");
   if (!field) return;
