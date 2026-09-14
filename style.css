@@ -155,9 +155,11 @@ body {
 }
 
 .chapter-directory a.is-published {
+  color: #ffd2e5;
   text-shadow:
-    0 0 4px rgba(243, 166, 201, .32),
-    0 0 9px rgba(243, 166, 201, .16);
+    0 0 2px rgba(255, 150, 200, .90),
+    0 0 10px rgba(255, 166, 201, .70),
+    0 0 20px rgba(255, 150,200, .45);
 }
 
 .chapter-directory a:hover {
