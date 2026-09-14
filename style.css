@@ -241,6 +241,22 @@ body {
 
 #reader p { white-space: pre-wrap; }
 
+/* Optional content warning: place before the chapter-text script. */
+.content-warning {
+  margin: 0 0 1.45em;
+  padding: .65em 1em;
+  border-left: 2px solid var(--pink);
+  background: rgba(230, 164, 194, .05);
+  color: var(--pink-light);
+  font-family: "Times New Roman", Times, serif;
+  font-size: var(--reader-size, 19px);
+  line-height: 1.95;
+  overflow-wrap: anywhere;
+  text-shadow:
+    0 0 2px rgba(255, 150, 200, .75),
+    0 0 10px rgba(255, 166, 201, .45);
+}
+
 .chapter-likes {
   display: flex;
   flex-direction: column;
