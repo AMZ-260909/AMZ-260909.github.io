@@ -154,6 +154,12 @@ body {
   transition: color .2s ease, transform .2s ease;
 }
 
+.chapter-directory a.is-published {
+  text-shadow:
+    0 0 4px rgba(243, 166, 201, .32),
+    0 0 9px rgba(243, 166, 201, .16);
+}
+
 .chapter-directory a:hover {
   color: var(--pink-light);
   transform: translateY(-2px);

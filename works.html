@@ -17,6 +17,8 @@
 
   <script>
     const totalChapters = 343;
+    // 手动点亮目录：更新到第几章，就把这里改成几；填 0 表示全部未更新。
+    const publishedThrough = 11;
     const directory = document.getElementById("chapterDirectory");
 
     for (let i = 1; i <= totalChapters; i++) {
@@ -24,6 +26,11 @@
       const n = String(i).padStart(3, "0");
       link.href = `novel-a/chapter-${n}.html`;
       link.textContent = i;
+      if (i <= publishedThrough) {
+        link.classList.add("is-published");
+        link.title = `第 ${i} 章 · 已更新`;
+        link.setAttribute("aria-label", `第 ${i} 章，已更新`);
+      }
       directory.appendChild(link);
     }
   </script>
