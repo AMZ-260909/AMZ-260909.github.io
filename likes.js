@@ -17,7 +17,7 @@ async function initChapterLikes() {
   button.type = "button";
   button.className = "like-button";
   button.disabled = true;
-  button.setAttribute("aria-label", "点赞本章");
+  button.setAttribute("aria-label", "Like this chapter");
   button.setAttribute("aria-pressed", "false");
   const heart = document.createElement("span");
   heart.className = "like-heart";
@@ -35,7 +35,7 @@ async function initChapterLikes() {
 
   const { url, publishableKey } = CHAPTER_LIKES_CONFIG;
   if (!url || !publishableKey) {
-    status.textContent = "点赞即将开放";
+    status.textContent = "Likes coming soon";
     return;
   }
 
@@ -47,7 +47,7 @@ async function initChapterLikes() {
       localStorage.setItem("chapter-like-visitor", visitor);
     }
   } catch {
-    status.textContent = "请允许浏览器保存数据后再点赞";
+    status.textContent = "Please allow your browser to save data before liking";
     return;
   }
 
@@ -77,18 +77,18 @@ async function initChapterLikes() {
     loaded = true;
     count.textContent = String(data.count);
     button.setAttribute("aria-pressed", String(data.liked));
-    button.setAttribute("aria-label", `${data.liked ? "已点赞" : "点赞本章"}，${data.count} 个赞`);
+    button.setAttribute("aria-label", `${data.liked ? "Liked" : "Like this chapter"}, ${data.count} ${data.count === 1 ? "like" : "likes"}`);
     button.disabled = data.liked;
-    status.textContent = data.liked ? "谢谢你的喜欢" : "";
+    status.textContent = data.liked ? "Thanks for the love" : "";
   }
 
   button.addEventListener("click", async () => {
     button.disabled = true;
-    status.textContent = loaded ? "正在点赞…" : "正在加载…";
+    status.textContent = loaded ? "Liking…" : "Loading…";
     try {
       show(await request(loaded ? "like_chapter" : "get_chapter_likes"));
     } catch {
-      status.textContent = "暂时连接不上，点击爱心重试";
+      status.textContent = "Unable to connect right now. Click the heart to retry";
       button.disabled = false;
     }
   });
@@ -96,7 +96,7 @@ async function initChapterLikes() {
   try {
     show(await request("get_chapter_likes"));
   } catch {
-    status.textContent = "暂时连接不上，点击爱心重试";
+    status.textContent = "Unable to connect right now. Click the heart to retry";
     button.disabled = false;
   }
 }

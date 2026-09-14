@@ -1,14 +1,14 @@
-# 共享章节点赞配置
+# Shared chapter likes setup
 
-1. 在 https://supabase.com 创建自己的项目。
-2. 打开项目的 SQL Editor，新建查询，粘贴本目录 `likes.sql` 全部内容并运行。
-3. 从项目的 Connect 对话框或 Settings / API Keys 获取 Project URL 和 Publishable key。
-4. 将这两项填入根目录 `likes.js` 顶部的 `url` 和 `publishableKey`。不要填写 Secret key 或 service_role key。
-5. 提交并推送网站修改，等 GitHub Pages 部署完成后打开第一章。
-6. 验证：初次显示 0；点击后变为 1；刷新仍为 1 且已点赞。在另一浏览器打开同章，应看到 1，点赞后变为 2。返回原浏览器刷新，应显示 2。第二章计数应保持独立。
+1. Create your own project at https://supabase.com.
+2. Open the project's SQL Editor, create a new query, paste the entire contents of `likes.sql` from this directory, and run it.
+3. Get the Project URL and Publishable key from the project's Connect dialog or Settings / API Keys.
+4. Enter these values as `url` and `publishableKey` at the top of `likes.js` in the repository root. Do not use a Secret key or service_role key.
+5. Commit and push the website changes. Wait for GitHub Pages to finish deploying, then open Chapter 1.
+6. Verify: the initial count is 0; clicking changes it to 1; refreshing keeps it at 1 and shows that you have already liked the chapter. Open the same chapter in another browser: it should show 1, then 2 after liking. Refresh in the original browser: it should now show 2. Chapter 2 should have its own independent count.
 
-配置前显示“点赞即将开放”和破折号，不伪造计数。配置后读取失败可点击重试；点赞请求可安全重试，相同浏览器标识与章节的组合在数据库中只能出现一次。网页只加载公开 API key；数据库原始记录禁止匿名直接读取和修改，仅开放两个限定用途的函数。
+Before configuration, the page displays “Likes coming soon” and a dash instead of a made-up count. Once configured, failed requests can be retried by clicking the heart. Like requests are safe to retry: each combination of browser identifier and chapter can appear only once in the database. The website uses only a public API key. Anonymous users cannot directly read or modify the underlying records; only two functions with specific purposes are exposed.
 
-这里的去重是每个浏览器一次，不是实名用户一次。更换浏览器、清除站点数据或人为构造新标识可以再次点赞；该轻量方案不提供严格防刷。总数在打开页面和点赞后获取，其他读者点赞后需要刷新查看。浏览器只保存随机标识，总数由数据库保存。
+Duplicate likes are prevented per browser, not per verified person. Switching browsers, clearing site data, or deliberately generating a new identifier allows another like; this lightweight approach does not provide strict protection against artificially inflated counts. Totals are fetched when the page opens and after a like. Refresh to see likes added by other readers. The browser stores only a random identifier; the database stores the shared count.
 
-官方说明：https://supabase.com/docs/guides/getting-started/api-keys 和 https://supabase.com/docs/guides/database/functions
+Official documentation: https://supabase.com/docs/guides/getting-started/api-keys and https://supabase.com/docs/guides/database/functions

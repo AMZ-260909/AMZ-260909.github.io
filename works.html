@@ -27,8 +27,8 @@
       link.textContent = i;
       if (i <= publishedThrough) {
         link.classList.add("is-published");
-        link.title = `第 ${i} 章 · 已更新`;
-        link.setAttribute("aria-label", `第 ${i} 章，已更新`);
+        link.title = `Chapter ${i} · Published`;
+        link.setAttribute("aria-label", `Chapter ${i}, published`);
       }
       directory.appendChild(link);
     }
