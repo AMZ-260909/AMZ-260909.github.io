@@ -5,10 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>pics</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="gallery.css">
 </head>
 <body>
   <div class="starfield"></div>
-  <main class="pics-center"></main>
+  <main class="pics-center gallery-page">
+    <header class="gallery-header">
+      <h1 class="glow-title gallery-title">pics</h1>
+      <nav aria-label="Gallery navigation">
+        <a class="soft-link" href="index.html">home</a>
+        <a class="soft-link" href="https://www.behance.net/AMZ-260909" target="_blank" rel="noopener noreferrer">behance ↗</a>
+      </nav>
+    </header>
+    <div class="gallery-grid" id="gallery" aria-label="Artwork gallery"></div>
+    <noscript><p class="gallery-notice">Please enable JavaScript to view the gallery, or <a href="https://www.behance.net/AMZ-260909">visit Behance</a>.</p></noscript>
+  </main>
+  <script src="gallery-data.js"></script>
+  <script src="gallery.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

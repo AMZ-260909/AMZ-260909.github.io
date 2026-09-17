@@ -1,0 +1,70 @@
+/* Gallery-only styles keep the homepage and novel pages unchanged. */
+.gallery-page {
+  width: min(1160px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 58px 0 64px;
+}
+
+.gallery-header {
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+.gallery-title {
+  font-size: clamp(2rem, 6vw, 3.5rem);
+  margin-bottom: 20px;
+}
+
+.gallery-header nav { display: flex; justify-content: center; gap: 28px; }
+
+.gallery-grid {
+  columns: 3;
+  column-gap: 4px;
+}
+
+.gallery-item {
+  display: inline-block;
+  vertical-align: top;
+  width: 100%;
+  margin: 0 0 4px;
+  break-inside: avoid;
+}
+
+.gallery-link {
+  display: block;
+  color: var(--pink-dim);
+  text-decoration: none;
+}
+
+.gallery-link img {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: var(--bg);
+}
+
+.gallery-item figcaption {
+  padding: 7px 6px 9px;
+  font-size: .68rem;
+  line-height: 1.45;
+  letter-spacing: .06em;
+  overflow-wrap: anywhere;
+}
+
+.gallery-link:hover { color: var(--pink-light); }
+.gallery-item figcaption a { color: var(--pink-dim); text-decoration: none; }
+.gallery-item figcaption a:hover { color: var(--pink-light); }
+.gallery-item figcaption a:focus-visible { outline: 1px solid var(--pink); outline-offset: 2px; }
+.gallery-link:focus-visible { outline: 2px solid var(--pink); outline-offset: -2px; }
+.gallery-notice { text-align: center; color: var(--text); }
+.gallery-notice a { color: var(--pink); }
+
+@media (max-width: 700px) {
+  .gallery-page { width: calc(100% - 20px); padding-top: 36px; }
+  .gallery-grid { columns: 2; }
+  .gallery-header { margin-bottom: 28px; }
+}
+
+@media (max-width: 360px) {
+  .gallery-grid { columns: 1; }
+}
