@@ -9,6 +9,8 @@ Edit `gallery-data.js` in the repository root to manage the gallery:
 - `image`: local thumbnail path, for example `assets/gallery/my-art.webp`.
 - `width` and `height`: the thumbnail's actual pixel dimensions.
 - `title`: the short caption displayed below the image.
+- `featured`: set to `true` to span the full gallery width. Put this entry first
+  in the list to display it above the masonry images. Omit it for regular images.
 - `url`: the full Behance project URL opened when the image or caption is clicked.
 
 Copy an existing entry to add a picture, or remove an entry to hide it. Keep a

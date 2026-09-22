@@ -1,9 +1,9 @@
 // Replace each preview with a local thumbnail and link to its Behance project.
 // Width and height must match the thumbnail's dimensions. Order follows this list.
-// These nine gray studies are placeholders; all currently link to the same project.
+// Add featured: true to span all columns. Put the featured image first to show it at the top.
 const galleryItems = [
-  { image: "assets/gallery/idgeo.png", width: 600, height: 600, title: "id georgina", url: "https://www.behance.net/gallery/255834729/oc-geo" },
-  { image: "assets/gallery/study-02.svg", width: 600, height: 450, title: "Study 02 — Horizon", url: "https://www.behance.net/gallery/255834729/oc-geo" },
+  { image: "assets/gallery/faces.png", width: 1500, height: 1500, title: "oc faces", url: "https://www.behance.net/gallery/255880589/oc-faces", featured: true },
+  { image: "assets/gallery/side faces.png", width: 1342, height: 1338, title: "side faces", url: "https://www.behance.net/gallery/255834729/side-faces", featured: true },
   { image: "assets/gallery/study-03.svg", width: 600, height: 650, title: "Study 03 — Fold", url: "https://www.behance.net/gallery/255834729/oc-geo" },
   { image: "assets/gallery/study-04.svg", width: 600, height: 460, title: "Study 04 — Balance", url: "https://www.behance.net/gallery/255834729/oc-geo" },
   { image: "assets/gallery/study-05.svg", width: 600, height: 820, title: "Study 05 — Passage", url: "https://www.behance.net/gallery/255834729/oc-geo" },

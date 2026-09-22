@@ -5,6 +5,7 @@
   galleryItems.forEach((item, index) => {
     const figure = document.createElement("figure");
     figure.className = "gallery-item";
+    if (item.featured) figure.classList.add("gallery-item-featured");
     const link = document.createElement("a");
     link.className = "gallery-link";
     link.href = item.url;
@@ -17,7 +18,7 @@
     image.alt = item.title;
     image.width = item.width;
     image.height = item.height;
-    image.loading = index < 3 ? "eager" : "lazy";
+    image.loading = item.featured || index < 3 ? "eager" : "lazy";
     image.decoding = "async";
 
     const caption = document.createElement("figcaption");
