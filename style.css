@@ -286,12 +286,12 @@ body {
 }
 
 .like-button:focus-visible { outline: 2px solid var(--pink-light); outline-offset: 5px; }
-.like-button:hover:not(:disabled) { background: rgba(230, 164, 194, .16); }
-.like-button:disabled { cursor: default; }
-.like-button[aria-pressed="true"] { color: var(--pink-light); border-color: var(--pink); }
+.like-button:hover { background: rgba(230, 164, 194, .16); }
+.like-button.is-celebrating { color: var(--pink-light); border-color: var(--pink); }
 .like-heart { position: relative; font-size: 28px; line-height: 1; animation: heartTwinkle 2.4s ease-in-out infinite alternate; }
 .like-heart::after { content: "✧"; position: absolute; top: -5px; right: -8px; font-size: 13px; }
-.like-count { font-variant-numeric: tabular-nums; }
+.like-button.is-celebrating .like-heart { animation: heartPop .6s ease-out both; }
+.like-button.is-celebrating .like-heart::after { animation: heartSparkle .6s ease-out both; }
 .like-status { min-height: 1.4em; color: var(--pink-dim); font-size: .75rem; }
 
 @keyframes heartTwinkle {
@@ -299,8 +299,22 @@ body {
   to { text-shadow: 0 0 9px #f3a6c9, 0 0 18px rgba(243, 166, 201, .6); transform: scale(1.06); }
 }
 
+@keyframes heartPop {
+  0%, 100% { transform: scale(1); }
+  35% { transform: scale(1.4); text-shadow: 0 0 12px #f3a6c9, 0 0 24px rgba(243, 166, 201, .7); }
+  65% { transform: scale(.94); }
+}
+
+@keyframes heartSparkle {
+  0% { transform: translate(0, 0) scale(.7); opacity: .3; }
+  45% { opacity: 1; }
+  100% { transform: translate(9px, -13px) scale(1.5); opacity: 0; }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .like-heart { animation: none; }
+  .like-heart,
+  .like-button.is-celebrating .like-heart,
+  .like-button.is-celebrating .like-heart::after { animation: none; }
 }
 
 .chapter-nav {

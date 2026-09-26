@@ -1,4 +1,8 @@
-# Shared chapter likes setup
+# Archived shared chapter likes setup
+
+The website now uses a local heart animation with no counter or database requests.
+Supabase is no longer required. The SQL file and instructions below are retained
+only as a historical reference; do not run them for the current website.
 
 1. Create your own project at https://supabase.com.
 2. Open the project's SQL Editor, create a new query, paste the entire contents of `likes.sql` from this directory, and run it.
