@@ -15,6 +15,20 @@ function renderChapterText() {
 
   if (text) {
     text.split(/\n[^\S\n]*\n(?:[^\S\n]*\n)*/).forEach((paragraph) => {
+      // An image marker must occupy its own paragraph; all other text stays literal.
+      const illustration = paragraph.trim().match(/^\[image:(assets\/[^\r\n\[\]]+)\]$/);
+      if (illustration) {
+        const figure = document.createElement("figure");
+        figure.className = "reader-illustration";
+        const img = document.createElement("img");
+        img.src = new URL("../" + illustration[1], document.baseURI).href;
+        img.alt = "Chapter illustration";
+        img.loading = "lazy";
+        img.decoding = "async";
+        figure.appendChild(img);
+        paragraphs.appendChild(figure);
+        return;
+      }
       const p = document.createElement("p");
       p.textContent = paragraph;
       paragraphs.appendChild(p);

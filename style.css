@@ -245,6 +245,18 @@ body {
 
 #reader p { white-space: pre-wrap; }
 
+.reader-illustration {
+  width: 100%;
+  margin: 1.45em auto;
+}
+
+.reader-illustration img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+}
+
 /* Optional content warning: place before the chapter-text script. */
 .content-warning {
   margin: 0 0 1.45em;
