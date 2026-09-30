@@ -2,7 +2,7 @@
 
 The nine SVG studies are small grayscale placeholders created for layout testing.
 Replace them with your own compressed JPG, PNG, WebP, or SVG thumbnails.
-The full-resolution artwork stays on Behance.
+Images and captions are displayed locally without outgoing links.
 
 Edit `gallery-data.js` in the repository root to manage the gallery:
 
@@ -11,7 +11,6 @@ Edit `gallery-data.js` in the repository root to manage the gallery:
 - `title`: the short caption displayed below the image.
 - `featured`: set to `true` to span the full gallery width. Put this entry first
   in the list to display it above the masonry images. Omit it for regular images.
-- `url`: the full Behance project URL opened when the image or caption is clicked.
 
 Copy an existing entry to add a picture, or remove an entry to hide it. Keep a
 comma between entries. The CSS column layout fills top to bottom in each column;
