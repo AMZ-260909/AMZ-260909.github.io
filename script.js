@@ -36,6 +36,12 @@ function renderChapterText() {
   }
 
   reader.replaceChildren(paragraphs);
+  if (!document.querySelector('script[data-chapter-feedback]')) {
+    const feedback = document.createElement('script');
+    feedback.dataset.chapterFeedback = '';
+    feedback.src = new URL('../feedback.js', document.baseURI).href;
+    document.head.appendChild(feedback);
+  }
 }
 
 if (document.readyState === "loading") {

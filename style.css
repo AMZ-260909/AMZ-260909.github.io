@@ -379,3 +379,36 @@ body {
     padding-top: 44px;
   }
 }
+
+/* Private chapter feedback */
+.paragraph-feedback {
+  display: inline-block; margin-left: .55em; padding: 2px 7px;
+  border: 1px solid #93637b; border-radius: 12px; background: transparent;
+  color: var(--pink, #efaacb); font: 13px/1.5 sans-serif; cursor: pointer;
+  vertical-align: middle; text-indent: 0;
+}
+.chapter-feedback, .paragraph-editor {
+  border: 1px solid #674559; border-radius: 12px; padding: 18px;
+  background: #211923; color: #f0dce8; text-indent: 0;
+  font: 15px/1.7 sans-serif; letter-spacing: normal;
+}
+.chapter-feedback { margin-top: 32px; }
+.chapter-feedback h2 { font-size: 19px; margin: 0 0 12px; }
+.chapter-feedback label, .paragraph-editor label { display: block; margin: 12px 0; }
+.chapter-feedback input, .chapter-feedback textarea, .paragraph-editor textarea {
+  display: block; box-sizing: border-box; width: 100%; margin-top: 6px;
+  border: 1px solid #93637b; border-radius: 7px; background: #17121b;
+  color: #f5e8ef; padding: 10px; font: 16px/1.6 sans-serif;
+}
+.chapter-feedback textarea, .paragraph-editor textarea { min-height: 110px; resize: vertical; }
+.feedback-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.feedback-actions button, .paragraph-editor button {
+  border: 1px solid #aa7791; border-radius: 8px; padding: 10px 14px;
+  background: #382433; color: #ffe3f1; font: inherit; cursor: pointer;
+}
+.chapter-feedback button:disabled { opacity: .55; cursor: wait; }
+.chapter-feedback pre { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 340px; overflow: auto; font: inherit; }
+.chapter-feedback summary { cursor: pointer; }
+.feedback-hint { font-size: 13px; color: #cfb9c7; }
+.paragraph-editor[hidden] { display: none; }
+.paragraph-feedback:focus-visible, .chapter-feedback :focus-visible, .paragraph-editor :focus-visible { outline: 2px solid #ffd0e8; outline-offset: 3px; }
