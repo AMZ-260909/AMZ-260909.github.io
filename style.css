@@ -378,13 +378,13 @@ body {
     width: min(100% - 26px, var(--reader-width));
     padding-top: 44px;
   }
-}
 
 /* Private chapter feedback */
 .paragraph-feedback {
   display: inline-block; margin-left: .55em; padding: 2px 7px;
-  border: 1px solid #93637b; border-radius: 12px; background: transparent;
-  color: var(--pink, #efaacb); font: 13px/1.5 sans-serif; cursor: pointer;
+  appearance: none; -webkit-appearance: none;
+  border: 1px solid #A6819A; border-radius: 12px; background: #A6819A;
+  color: #fff; -webkit-text-fill-color: #fff; font: 13px/1.5 sans-serif; cursor: pointer;
   vertical-align: middle; text-indent: 0;
 }
 .chapter-feedback, .paragraph-editor {

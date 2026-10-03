@@ -1,4 +1,4 @@
-﻿(() => {
+(() => {
   const reader = document.getElementById('reader');
   if (!reader || document.getElementById('chapter-feedback')) return;
   const key = 'chapter-feedback-v1:' + location.pathname;
@@ -19,9 +19,9 @@
   };
   const section = make('section', '', 'chapter-feedback');
   section.id = 'chapter-feedback';
-  section.lang = 'zh-CN';
-  section.append(make('h2', '给作者的小纸条'));
-  section.append(make('p', '点击段落旁的 ♡ 写下感想，在这里一起发送。留言不公开，经 Formspree 转交作者邮箱。'));
+  section.lang = 'en';
+  section.append(make('h2', 'Send the author a repo'));
+  section.append(make('p', 'Click the heart beside a paragraph to write a repo, then send everything here. Your repo stays private and is delivered to the author via Formspree.'));
   const form = make('form');
   const field = (label, tag, value, max) => {
     const wrap = make('label', label);
@@ -32,19 +32,19 @@
     form.append(wrap);
     return input;
   };
-  const nickname = field('昵称（选填）', 'input', draft.nickname, 80);
-  const closing = field('章末感想（选填）', 'textarea', draft.closing, 10000);
+  const nickname = field('Nickname (optional)', 'input', draft.nickname, 80);
+  const closing = field('Chapter repo (optional)', 'textarea', draft.closing, 10000);
   const summary = make('details');
   const summaryTitle = make('summary');
   const preview = make('pre');
   summary.append(summaryTitle, preview);
   form.append(summary);
   const actions = make('div', '', 'feedback-actions');
-  const send = make('button', '发送本章留言');
+  const send = make('button', 'Send chapter repo');
   send.type = 'submit';
-  const copy = make('button', '复制备份');
+  const copy = make('button', 'Copy backup');
   copy.type = 'button';
-  const download = make('button', '下载备份');
+  const download = make('button', 'Download backup');
   download.type = 'button';
   actions.append(send, copy, download);
   const status = make('p');
@@ -55,11 +55,11 @@
   const nav = document.querySelector('.chapter-nav');
   if (nav) nav.before(section); else reader.after(section);
   const title = document.querySelector('h1')?.textContent.trim() || document.title;
-  const message = () => [title, location.href.split('#')[0], '昵称：' + (draft.nickname.trim() || '匿名读者'), ...draft.notes.filter(n => n.text.trim()).map(n => '\n原文：' + n.quote + '\n感想：' + n.text), '\n章末感想：' + draft.closing].join('\n');
+  const message = () => [title, location.href.split('#')[0], 'Nickname: ' + (draft.nickname.trim() || 'Anonymous reader'), ...draft.notes.filter(n => n.text.trim()).map(n => '\nQuote: ' + n.quote + '\nrepo: ' + n.text), '\nChapter repo: ' + draft.closing].join('\n');
   const refresh = () => {
-    summaryTitle.textContent = `预览待发送内容（${draft.notes.filter(n => n.text.trim()).length} 条段落留言）`;
+    summaryTitle.textContent = `Preview (${draft.notes.filter(n => n.text.trim()).length} paragraph entries)`;
     preview.textContent = message();
-    storage.textContent = storageOK ? '草稿仅保存在当前浏览器，发送前可复制或下载备份。' : '无法可靠保存草稿，请在离开页面前复制或下载备份。';
+    storage.textContent = storageOK ? 'Drafts are saved only in this browser. You can copy or download a backup before sending.' : 'Draft storage is unavailable. Please copy or download a backup before leaving this page.';
   };
   const save = () => {
     try { localStorage.setItem(key, JSON.stringify(draft)); storageOK = true; } catch { storageOK = false; }
@@ -74,21 +74,21 @@
     const occurrence = occurrences.get(quote) || 0;
     occurrences.set(quote, occurrence + 1);
     let note = draft.notes.find(n => n.quote === quote && n.occurrence === occurrence);
-    const button = make('button', note?.text.trim() ? '♡ 1' : '♡', 'paragraph-feedback');
+    const button = make('button', note?.text.trim() ? '♥︎ 1' : '♥︎', 'paragraph-feedback');
     button.type = 'button';
-    button.setAttribute('aria-label', `给第 ${index + 1} 段写私密留言`);
+    button.setAttribute('aria-label', `Write a private repo for paragraph ${index + 1}`);
     button.setAttribute('aria-expanded', 'false');
     const editor = make('div', '', 'paragraph-editor');
     editor.hidden = true;
     editor.id = 'paragraph-feedback-' + index;
-    editor.lang = 'zh-CN';
+    editor.lang = 'en';
     button.setAttribute('aria-controls', editor.id);
-    const label = make('label', '这一段的感想（尚未发送）');
+    const label = make('label', 'Paragraph repo (not sent yet)');
     const input = make('textarea');
     input.maxLength = 5000;
     input.value = note?.text || '';
     label.append(input);
-    const done = make('button', '收起');
+    const done = make('button', 'Close');
     done.type = 'button';
     editor.append(label, done);
     p.append(button);
@@ -104,14 +104,14 @@
     input.addEventListener('input', () => {
       if (!note) { note = { quote, occurrence, text: '' }; draft.notes.push(note); }
       note.text = input.value;
-      button.textContent = input.value.trim() ? '♡ 1' : '♡';
+      button.textContent = input.value.trim() ? '♥︎ 1' : '♥︎';
       save();
     });
     editors.push({ input, button, editor });
   });
   copy.addEventListener('click', async () => {
-    try { await navigator.clipboard.writeText(message()); status.textContent = '已复制，可粘贴保存。'; }
-    catch { summary.open = true; status.textContent = '无法自动复制，请选中预览中的文字复制，或下载备份。'; }
+    try { await navigator.clipboard.writeText(message()); status.textContent = 'Copied! Paste it somewhere safe to keep a backup.'; }
+    catch { summary.open = true; status.textContent = 'Could not copy automatically. Select and copy the preview text, or download a backup.'; }
   });
   download.addEventListener('click', () => {
     const url = URL.createObjectURL(new Blob([message()], { type: 'text/plain;charset=utf-8' }));
@@ -125,27 +125,27 @@
   form.addEventListener('submit', async e => {
     e.preventDefault();
     if (sending) return;
-    if (!draft.closing.trim() && !draft.notes.some(n => n.text.trim())) { status.textContent = '先写一点感想再发送吧。'; return; }
+    if (!draft.closing.trim() && !draft.notes.some(n => n.text.trim())) { status.textContent = 'Write a repo before sending.'; return; }
     sending = true;
     const controls = [nickname, closing, send, ...editors.map(e => e.input)];
     controls.forEach(el => { el.disabled = true; });
-    status.textContent = '正在发送，请稍候……';
+    status.textContent = 'Sending, please wait...';
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 30000);
     try {
       const response = await fetch('https://formspree.io/f/mdekqnjd', {
         method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({ subject: '小说小纸条 · ' + title, message: message() }), signal: controller.signal
+        body: JSON.stringify({ subject: 'Chapter repo · ' + title, message: message() }), signal: controller.signal
       });
       if (!response.ok) throw new Error('Submission failed');
       draft.closing = '';
       draft.notes.forEach(n => { n.text = ''; });
       closing.value = '';
-      editors.forEach(({ input, button, editor }) => { input.value = ''; button.textContent = '♡'; editor.hidden = true; button.setAttribute('aria-expanded', 'false'); });
+      editors.forEach(({ input, button, editor }) => { input.value = ''; button.textContent = '♥︎'; editor.hidden = true; button.setAttribute('aria-expanded', 'false'); });
       save();
-      status.textContent = '留言服务已接收，谢谢你的小纸条！';
+      status.textContent = 'Your repo has been accepted by the delivery service. Thank you!';
     } catch {
-      status.textContent = '未能确认发送成功，草稿已保留。可稍后重试或复制备份；若刚才实际已送达，重试可能重复发送。';
+      status.textContent = 'Could not confirm delivery. Your draft is still available. Try again later or copy a backup. Retrying may send a duplicate if the first attempt went through.';
     } finally {
       clearTimeout(timeout);
       sending = false;
