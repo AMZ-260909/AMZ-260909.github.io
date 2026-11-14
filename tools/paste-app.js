@@ -55,9 +55,9 @@
     const list = numbers.slice().sort((a, b) => a - b);
     if (!list.length) return "";
     const contiguous = list.every((n, i) => i === 0 || n === list[i - 1] + 1);
-    if (list.length === 1) return "第" + list[0] + "章";
-    if (contiguous) return "第" + list[0] + "–" + list[list.length - 1] + "章";
-    return "第" + list.join("、") + "章";
+    if (list.length === 1) return "chapter " + list[0];
+    if (contiguous) return "chapters " + list[0] + "–" + list[list.length - 1];
+    return "chapters " + list.join(", ");
   }
 
   function sameList(a, b) {
@@ -95,14 +95,14 @@
         cache: "no-store",
       });
     } catch (e) {
-      const err = new Error("连不上 GitHub，检查一下网络再试。");
+      const err = new Error("Can’t reach GitHub. Check the internet connection and try again.");
       err.status = 0;
       throw err;
     }
     if (!res.ok) {
       let detail = "";
       try { detail = (await res.json()).message || ""; } catch (e) { /* not json */ }
-      const err = new Error(detail || "GitHub 返回 " + res.status);
+      const err = new Error(detail || "GitHub returned " + res.status);
       err.status = res.status;
       throw err;
     }
@@ -112,9 +112,9 @@
   const repoPath = "/repos/" + OWNER + "/" + REPO;
 
   function friendly(err) {
-    if (err.status === 401) return "钥匙不对或者过期了，在上面删掉钥匙、换一把新的。";
-    if (err.status === 403) return "钥匙没有写入权限。新建钥匙时 Contents 要选 Read and write。（" + err.message + "）";
-    if (err.status === 404) return "钥匙看不到网站仓库。新建钥匙时 Repository access 要选 AMZ-260909.github.io。";
+    if (err.status === 401) return "The key is wrong or has expired. Remove it above and add a new one.";
+    if (err.status === 403) return "This key isn’t allowed to change the site. When creating the key, set Contents to Read and write. (" + err.message + ")";
+    if (err.status === 404) return "This key can’t see the site’s repository. When creating the key, choose AMZ-260909.github.io under Repository access.";
     return err.message;
   }
 
@@ -150,7 +150,7 @@
       await gh(repoPath + "/git/refs/heads/" + BRANCH, { method: "PATCH", body: { sha, force: false } });
     } catch (err) {
       if (err.status === 422 || err.status === 409) {
-        const e = new Error("网站在你点“切章并对比”之后又有了新改动（可能是 VS Code 那边推了东西）。什么都没发出去；请重新点“切章并对比”，再发布。");
+        const e = new Error("The site changed after you clicked “Split & compare” (maybe something was pushed from VS Code). Nothing was published. Click “Split & compare” again, then publish.");
         e.status = 422;
         throw e;
       }
@@ -174,8 +174,8 @@
 
   $("keySave").addEventListener("click", async () => {
     const candidate = $("keyInput").value.trim();
-    if (!candidate) { say("keyMsg", "先把钥匙粘进框里。", "bad"); return; }
-    say("keyMsg", "正在检查钥匙……");
+    if (!candidate) { say("keyMsg", "Paste the key into the box first.", "bad"); return; }
+    say("keyMsg", "Checking the key…");
     try {
       const login = await checkKey(candidate);
       token = candidate;
@@ -195,7 +195,7 @@
   });
 
   if (token) {
-    showKeyState("（检查中）");
+    showKeyState("(checking…)");
     checkKey(token).then(showKeyState, (err) => {
       if (err.status === 401 || err.status === 404) {
         token = "";
@@ -203,7 +203,7 @@
         showKeyState(null);
         say("keyMsg", friendly(err), "bad");
       } else {
-        showKeyState("已保存");
+        showKeyState("saved key");
       }
     });
   } else {
@@ -235,16 +235,16 @@
 
   async function compare() {
     $("donePanel").hidden = true;
-    if (!token) { say("compareMsg", "先在第 1 步放好钥匙。", "bad"); return; }
+    if (!token) { say("compareMsg", "Add the key in step 1 first.", "bad"); return; }
     const pasted = $("pasteBox").value;
     const split = C.splitChapters(pasted);
     if (!split.chapters.length) {
-      say("compareMsg", "没找到章标题。复制时要连着“第十章 呦呦鹿鸣”这样单独一行的标题一起复制。", "bad");
+      say("compareMsg", "No chapter headings found. When copying from Word, include each chapter’s heading line (the chapter number and title on a line of their own).", "bad");
       return;
     }
     const button = $("compareBtn");
     button.disabled = true;
-    say("compareMsg", "正在读网站上现在的版本……");
+    say("compareMsg", "Reading the current version on the site…");
     try {
       const base = await headCommit();
       const worksHtml = await readFile("works.html", base.commit);
@@ -252,13 +252,13 @@
       const warnings = [];
       if (split.leading.trim()) {
         const peek = split.leading.trim().slice(0, 40);
-        warnings.push("第一个章标题前面还有文字，没有用上：“" + peek + (split.leading.trim().length > 40 ? "……" : "") + "”");
+        warnings.push("There’s text before the first chapter heading, and it was left out: “" + peek + (split.leading.trim().length > 40 ? "…" : "") + "”");
       }
       const seen = new Set();
       const items = [];
       for (const ch of split.chapters) {
         if (seen.has(ch.number)) {
-          warnings.push("第" + ch.number + "章粘了两次，只用了前一次。");
+          warnings.push("Chapter " + ch.number + " was pasted twice; only the first copy is used.");
           continue;
         }
         seen.add(ch.number);
@@ -273,7 +273,7 @@
       }
       await pool(items, 6, async (item) => {
         if (total && item.number > total) {
-          item.error = "网站目录只有 " + total + " 章，没有第" + item.number + "章的页面，跳过。";
+          item.error = "The site only has pages up to chapter " + total + ", so chapter " + item.number + " was skipped.";
           return;
         }
         try {
@@ -281,8 +281,8 @@
           item.old = C.parsePage(item.oldHtml);
         } catch (err) {
           item.error = err.status === 404
-            ? "网站上没有第" + item.number + "章的页面，跳过。"
-            : "读不到网站上的第" + item.number + "章：" + friendly(err);
+            ? "The site has no page for chapter " + item.number + ", so it was skipped."
+            : "Couldn’t read chapter " + item.number + " from the site: " + friendly(err);
           return;
         }
         item.cw = item.old.cw;
@@ -290,10 +290,10 @@
           const oldTitle = item.old.heading.replace(/^\d+\s*/, "");
           if (oldTitle) {
             item.title = oldTitle;
-            item.titleNote = "Word 里这章没写章名，沿用网站上的“" + oldTitle + "”。";
+            item.titleNote = "The pasted text has no title for this chapter, so the site’s title “" + oldTitle + "” is kept.";
           }
         }
-        if (!C.toParagraphs(item.lines, {}).length) item.error = "这一章只有标题没有正文，跳过。";
+        if (!C.toParagraphs(item.lines, {}).length) item.error = "This chapter has a heading but no text, so it was skipped.";
       });
       state = {
         base,
@@ -339,14 +339,14 @@
   }
 
   function badgeFor(item, r) {
-    if (item.error) return el("span", { class: "badge skip", text: "跳过" });
-    if (r.unsafe) return el("span", { class: "badge skip", text: "有问题" });
-    if (!r.changed) return el("span", { class: "badge same", text: "没变" });
-    if (r.isNew) return el("span", { class: "badge new", text: "新章" });
+    if (item.error) return el("span", { class: "badge skip", text: "skipped" });
+    if (r.unsafe) return el("span", { class: "badge skip", text: "problem" });
+    if (!r.changed) return el("span", { class: "badge same", text: "no change" });
+    if (r.isNew) return el("span", { class: "badge new", text: "new" });
     const parts = [];
-    if (r.textChanged) parts.push("正文改了 " + r.blocks.length + " 处");
-    if (r.headingChanged) parts.push("章名改了");
-    if (r.cwChanged) parts.push("CW 改了");
+    if (r.textChanged) parts.push(r.blocks.length + (r.blocks.length === 1 ? " text edit" : " text edits"));
+    if (r.headingChanged) parts.push("title changed");
+    if (r.cwChanged) parts.push("CW changed");
     return el("span", { class: "badge changed", text: parts.join(" · ") });
   }
 
@@ -382,11 +382,12 @@
 
     const skipped = state.items.filter((i) => i.error).length;
     const same = state.items.length - skipped - changedCount;
-    const bits = ["识别到 " + state.items.length + " 章"];
-    if (changedCount) bits.push("要更新 " + changedCount + " 章");
-    if (same) bits.push(same + " 章和网站上一样，不动");
-    if (skipped) bits.push(skipped + " 章跳过");
-    $("summary").textContent = bits.join("，") + "。";
+    const plural = (n, word) => n + " " + word + (n === 1 ? "" : "s");
+    const bits = ["Found " + plural(state.items.length, "chapter")];
+    if (changedCount) bits.push(changedCount + " to update");
+    if (same) bits.push(same + " unchanged (left alone)");
+    if (skipped) bits.push(skipped + " skipped");
+    $("summary").textContent = bits.join(" · ");
 
     // light up the directory
     const maxNumber = Math.max(...state.items.filter((i) => !i.error).map((i) => i.number), 0);
@@ -395,7 +396,7 @@
     state.lightUpTo = published !== null && maxNumber > published ? maxNumber : null;
     row.hidden = state.lightUpTo === null;
     if (state.lightUpTo !== null) {
-      $("lightUpText").textContent = "目录里点亮到第 " + state.lightUpTo + " 章（现在点亮到第 " + published + " 章）";
+      $("lightUpText").textContent = "Light up the chapter directory through chapter " + state.lightUpTo + " (currently through chapter " + published + ")";
       if (state.lightUpDefaultFor !== state.lightUpTo) {
         // Tick it by default only when this paste fills every chapter up to the new end,
         // so publishing ch46 alone doesn't light up 10–45 by accident.
@@ -415,7 +416,7 @@
     const body = el("div", { class: "card-body" });
 
     if (r.headingChanged) {
-      body.append(el("p", { class: "note", text: "章名：网站上是“" + item.old.heading + "”，改成“" + r.heading + "”。" }));
+      body.append(el("p", { class: "note", text: "Title: “" + item.old.heading + "” on the site becomes “" + r.heading + "”." }));
     }
     if (item.titleNote) body.append(el("p", { class: "note", text: item.titleNote }));
     if (r.unsafe) body.append(el("p", { class: "note bad", text: r.unsafe }));
@@ -423,23 +424,24 @@
     if (r.oldImages) {
       const guessed = r.placed.filter((p) => p.how === "guess").length;
       let text;
-      if (!item.keepImages) text = "网站上这章有 " + r.oldImages + " 张插图，这次不保留。";
-      else if (!r.placed.length) text = "粘贴的正文里自己带了插图标记，按你写的位置放。";
-      else if (guessed) text = "网站上这章有 " + r.oldImages + " 张插图，已放回；其中 " + guessed + " 张找不到原来那段，位置是估的，去“全文”里看一眼。";
-      else text = "网站上这章有 " + r.oldImages + " 张插图，已放回原来的位置。";
+      const pics = r.oldImages + (r.oldImages === 1 ? " illustration" : " illustrations");
+      if (!item.keepImages) text = "This chapter has " + pics + " on the site; they won’t be kept this time.";
+      else if (!r.placed.length) text = "The pasted text has its own illustration markers, so they go where you put them.";
+      else if (guessed) text = "This chapter has " + pics + " on the site, put back in place, but " + guessed + " couldn’t find the paragraph it used to follow, so its position is a guess. Check the Full text tab.";
+      else text = "This chapter has " + pics + " on the site; they were put back in the same places.";
       body.append(el("p", { class: "note" + (guessed && item.keepImages ? " warn" : ""), text }));
       const keep = el("input", { type: "checkbox", checked: item.keepImages });
       keep.addEventListener("change", () => { item.keepImages = keep.checked; renderPreview(); });
-      body.append(el("label", { class: "check" }, keep, " 保留插图"));
+      body.append(el("label", { class: "check" }, keep, " Keep illustrations"));
     }
 
-    const cwInput = el("input", { type: "text", value: item.cw || "", placeholder: "不需要就空着，例如：CW: Non-main character death" });
+    const cwInput = el("input", { type: "text", value: item.cw || "", placeholder: "Leave empty if not needed, e.g. CW: Non-main character death" });
     cwInput.addEventListener("change", () => { item.cw = cwInput.value; renderPreview(); });
-    body.append(el("label", { class: "cw-field" }, el("span", { text: "CW 提示" }), cwInput));
+    body.append(el("label", { class: "cw-field" }, el("span", { text: "Content warning" }), cwInput));
 
     const views = el("div", { class: "views" });
-    const diffBtn = el("button", { type: "button", class: "tab", text: "改了什么" });
-    const fullBtn = el("button", { type: "button", class: "tab", text: "全文" });
+    const diffBtn = el("button", { type: "button", class: "tab", text: "Changes" });
+    const fullBtn = el("button", { type: "button", class: "tab", text: "Full text" });
     const pane = el("div", { class: "pane" });
     const show = (which) => {
       diffBtn.classList.toggle("on", which === "diff");
@@ -457,20 +459,20 @@
   function renderDiff(item, r) {
     const wrap = el("div", { class: "diff" });
     if (r.isNew) {
-      wrap.append(el("p", { class: "note", text: "网站上这章原来是空页，下面整章都是新的。" }));
+      wrap.append(el("p", { class: "note", text: "This chapter was an empty page on the site, so all of it is new." }));
       return wrap;
     }
     if (!r.textChanged) {
-      wrap.append(el("p", { class: "note", text: "正文和网站上一字不差。" }));
+      wrap.append(el("p", { class: "note", text: "The text is identical to the site." }));
       return wrap;
     }
     for (const block of r.blocks) {
       const group = el("div", { class: "diff-block" });
       if (block.before) {
         const tail = Array.from(block.before);
-        group.append(el("p", { class: "context", text: "……" + tail.slice(-24).join("") }));
+        group.append(el("p", { class: "context", text: "…" + tail.slice(-24).join("") }));
       } else {
-        group.append(el("p", { class: "context", text: "（开头）" }));
+        group.append(el("p", { class: "context", text: "(start of chapter)" }));
       }
       if (block.removed.length === 1 && block.added.length === 1) {
         const p = el("p", { class: "para" });
@@ -493,7 +495,7 @@
     for (const p of paragraphs) {
       const m = /^\[image:(assets\/[^\r\n\[\]]+)\]$/.exec(p);
       if (m) {
-        article.append(el("figure", { class: "reader-illustration" }, el("img", { src: "../" + m[1], alt: "插图", loading: "lazy" })));
+        article.append(el("figure", { class: "reader-illustration" }, el("img", { src: "../" + m[1], alt: "Illustration", loading: "lazy" })));
       } else {
         article.append(el("p", { text: p }));
       }
@@ -531,7 +533,7 @@
     const plan = plannedFiles();
     const n = plan.numbers.length;
     publishBtn.disabled = plan.files.length === 0;
-    publishBtn.textContent = n ? "发布这 " + n + " 章" : plan.lit ? "只点亮目录" : "没有要发布的";
+    publishBtn.textContent = n ? "Publish " + n + (n === 1 ? " chapter" : " chapters") : plan.lit ? "Only light up the directory" : "Nothing to publish";
   }
 
   function disarm() {
@@ -545,21 +547,21 @@
     const plan = plannedFiles();
     if (!plan.files.length) return;
     if (!armed) {
-      publishBtn.textContent = "确定发布？再点一次";
+      publishBtn.textContent = "Sure? Click again to publish";
       publishBtn.classList.add("armed");
       armed = setTimeout(updatePublishButton, 6000);
       return;
     }
     disarm();
     publishBtn.disabled = true;
-    say("publishMsg", "正在发布……");
+    say("publishMsg", "Publishing…");
     const parts = [];
-    if (plan.numbers.length) parts.push("更新" + chapterRange(plan.numbers));
-    if (plan.lit) parts.push("目录点亮到第" + plan.lit + "章");
-    const message = parts.join("，") + "（章节工具）";
+    if (plan.numbers.length) parts.push("Update " + chapterRange(plan.numbers));
+    if (plan.lit) parts.push((parts.length ? "light" : "Light") + " up directory through chapter " + plan.lit);
+    const message = parts.join("; ") + " (chapter tool)";
     try {
       const done = await commitFiles(state.base, plan.files, message);
-      lastPublish = { commit: done.commit, parentTree: state.base.tree, numbers: plan.numbers };
+      lastPublish = { commit: done.commit, parentTree: state.base.tree, message };
       say("publishMsg", "");
       showDone(plan, done.commit);
       $("previewPanel").hidden = true;
@@ -580,14 +582,14 @@
     links.replaceChildren(
       ...plan.numbers.sort((a, b) => a - b).map((n) => {
         const url = SITE + "novel-a/chapter-" + C.pad3(n) + ".html";
-        return el("li", null, el("a", { href: url, target: "_blank", rel: "noopener", text: "第" + n + "章" }));
+        return el("li", null, el("a", { href: url, target: "_blank", rel: "noopener", text: "Chapter " + n }));
       })
     );
-    if (plan.lit) links.append(el("li", null, el("a", { href: SITE + "works.html", target: "_blank", rel: "noopener", text: "目录（点亮到第" + plan.lit + "章）" })));
+    if (plan.lit) links.append(el("li", null, el("a", { href: SITE + "works.html", target: "_blank", rel: "noopener", text: "Chapter directory (lit through chapter " + plan.lit + ")" })));
     $("doneCommit").href = "https://github.com/" + OWNER + "/" + REPO + "/commit/" + sha;
     $("undoBtn").hidden = false;
     $("undoBtn").disabled = false;
-    $("undoBtn").textContent = "撤销刚才这次发布";
+    $("undoBtn").textContent = "Undo this publish";
     say("undoMsg", "");
     $("donePanel").hidden = false;
     $("donePanel").scrollIntoView({ behavior: "smooth", block: "start" });
@@ -598,11 +600,11 @@
     const btn = $("undoBtn");
     if (!lastPublish) return;
     if (!undoArmed) {
-      btn.textContent = "确定撤销？再点一次";
+      btn.textContent = "Sure? Click again to undo";
       btn.classList.add("armed");
       undoArmed = setTimeout(() => {
         undoArmed = null;
-        btn.textContent = "撤销刚才这次发布";
+        btn.textContent = "Undo this publish";
         btn.classList.remove("armed");
       }, 6000);
       return;
@@ -611,16 +613,16 @@
     undoArmed = null;
     btn.classList.remove("armed");
     btn.disabled = true;
-    say("undoMsg", "正在撤销……");
+    say("undoMsg", "Undoing…");
     try {
       const ref = await gh(repoPath + "/git/ref/heads/" + BRANCH);
       if (ref.object.sha !== lastPublish.commit) {
-        throw new Error("这次发布之后网站又有了新改动，没法一键撤销了。什么都没动；去跟 Claude 说一声。");
+        throw new Error("The site has changed again since this publish, so it can’t be undone with one click anymore. Nothing was changed.");
       }
       const commit = await gh(repoPath + "/git/commits", {
         method: "POST",
         body: {
-          message: "撤销：" + (lastPublish.numbers.length ? "更新" + chapterRange(lastPublish.numbers) : "目录点亮") + "（章节工具）",
+          message: "Undo: " + lastPublish.message,
           tree: lastPublish.parentTree,
           parents: [lastPublish.commit],
         },
@@ -628,10 +630,10 @@
       await moveBranch(commit.sha);
       lastPublish = null;
       btn.hidden = true;
-      say("undoMsg", "撤销好了，网站一两分钟后变回发布前的样子。", "good");
+      say("undoMsg", "Undone. The site will be back to how it was in a minute or two.", "good");
     } catch (err) {
       btn.disabled = false;
-      btn.textContent = "撤销刚才这次发布";
+      btn.textContent = "Undo this publish";
       say("undoMsg", friendly(err), "bad");
     }
   });

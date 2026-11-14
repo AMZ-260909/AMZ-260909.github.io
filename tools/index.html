@@ -1,64 +1,66 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
-  <title>章节工具</title>
+  <title>Chapter tool</title>
   <link rel="stylesheet" href="../style.css">
   <style>
     .tool-wrap {
       position: relative;
       z-index: 1;
-      width: min(820px, calc(100% - 32px));
+      width: min(780px, calc(100% - 32px));
       margin: 0 auto;
-      padding: 56px 0 80px;
+      padding: 48px 0 72px;
       color: var(--text);
-      line-height: 1.7;
+      font-size: 14px;
+      line-height: 1.65;
     }
-    .tool-head { text-align: center; margin-bottom: 34px; }
-    .tool-head h1 { font-size: clamp(1.6rem, 5vw, 2.4rem); letter-spacing: .2em; }
-    .tool-sub { color: var(--pink); font-size: .9rem; letter-spacing: .08em; margin: 14px 0 0; }
+    .tool-head { text-align: center; margin-bottom: 28px; }
+    .tool-head h1 { font-size: clamp(1.25rem, 4vw, 1.7rem); letter-spacing: .22em; }
+    .tool-sub { color: var(--pink); font-size: .8rem; letter-spacing: .1em; margin: 10px 0 0; }
 
     .panel {
       background: rgba(20, 10, 16, .72);
       border: 1px solid rgba(230, 164, 194, .22);
       border-radius: 12px;
-      padding: 20px 22px;
-      margin-bottom: 22px;
+      padding: 18px 20px;
+      margin-bottom: 18px;
       backdrop-filter: blur(2px);
     }
     .panel h2 {
-      margin: 0 0 12px;
-      font-size: 1rem;
+      margin: 0 0 10px;
+      font-size: .9rem;
       font-weight: 500;
-      letter-spacing: .12em;
+      letter-spacing: .1em;
       color: var(--pink-light);
     }
-    .panel p { margin: 0 0 10px; }
+    .panel p { margin: 0 0 8px; }
     .panel a { color: var(--pink-light); }
 
-    .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 12px; }
+    .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 10px; }
 
     input[type="text"], input[type="password"], textarea {
       width: 100%;
       font: inherit;
+      font-size: 14px;
       color: var(--text);
       background: #0b0709;
       border: 1px solid rgba(230, 164, 194, .3);
       border-radius: 8px;
-      padding: 9px 11px;
+      padding: 7px 10px;
     }
     input:focus, textarea:focus { outline: 2px solid rgba(230, 164, 194, .55); outline-offset: 1px; }
-    .row input[type="password"] { flex: 1 1 260px; width: auto; }
-    textarea { min-height: 260px; resize: vertical; line-height: 1.75; font-size: .95rem; }
+    .row input[type="password"] { flex: 1 1 240px; width: auto; }
+    textarea { min-height: 220px; resize: vertical; line-height: 1.65; }
 
     button {
       font: inherit;
-      font-size: .9rem;
-      letter-spacing: .06em;
+      font-size: .8rem;
+      letter-spacing: .05em;
       border-radius: 999px;
-      padding: 8px 18px;
+      padding: 6px 15px;
       cursor: pointer;
       color: var(--pink-light);
       background: transparent;
@@ -70,72 +72,72 @@
     button.quiet { border-color: rgba(230, 164, 194, .2); color: var(--pink); }
     button.armed { background: #c9577f; border-color: #ff9dca; color: #fff; }
 
-    .check { display: flex; gap: 8px; align-items: flex-start; margin-top: 12px; font-size: .9rem; cursor: pointer; }
-    .check input { margin-top: .35em; accent-color: #e6a4c2; }
+    .check { display: flex; gap: 8px; align-items: flex-start; margin-top: 10px; font-size: .82rem; cursor: pointer; }
+    .check input { margin-top: .3em; accent-color: #e6a4c2; }
 
-    .msg { min-height: 1.2em; margin: 10px 0 0; font-size: .9rem; color: var(--pink); }
+    .msg { min-height: 1.2em; margin: 8px 0 0; font-size: .82rem; color: var(--pink); }
     .msg.bad, .note.bad { color: #ff8fa8; }
     .msg.good { color: #a8e6c4; }
-    .note { font-size: .88rem; color: #cbb8c2; }
+    .note { font-size: .8rem; color: #cbb8c2; }
     .note.warn { color: #ffd38f; }
 
-    .howto { margin: 8px 0 4px; font-size: .9rem; }
+    .howto { margin: 6px 0 4px; font-size: .82rem; }
     .howto summary { cursor: pointer; color: var(--pink); }
-    .howto ol { margin: 10px 0 0; padding-left: 1.4em; }
-    .howto li { margin-bottom: 6px; }
+    .howto ol { margin: 8px 0 0; padding-left: 1.4em; }
+    .howto li { margin-bottom: 5px; }
     .howto code { color: var(--pink-light); }
 
-    .warnings { margin: 0 0 12px; padding-left: 1.2em; color: #ffd38f; font-size: .9rem; }
+    .warnings { margin: 0 0 10px; padding-left: 1.2em; color: #ffd38f; font-size: .82rem; }
     .warnings:empty { display: none; }
 
     .chapter-card {
       border: 1px solid rgba(230, 164, 194, .16);
       border-radius: 10px;
-      margin: 10px 0;
+      margin: 8px 0;
       background: rgba(0, 0, 0, .35);
     }
     .chapter-card > summary {
       display: flex;
       flex-wrap: wrap;
-      gap: 6px 12px;
+      gap: 4px 10px;
       align-items: center;
-      padding: 11px 14px;
+      padding: 9px 12px;
       cursor: pointer;
       list-style: none;
     }
     .chapter-card > summary::-webkit-details-marker { display: none; }
     .chapter-card > summary::before { content: "▸"; color: var(--pink-dim); }
     .chapter-card[open] > summary::before { content: "▾"; }
-    .ch-name { letter-spacing: .08em; color: #fff; }
-    .badge { font-size: .78rem; padding: 1px 9px; border-radius: 999px; border: 1px solid; }
+    .ch-name { letter-spacing: .06em; color: #fff; }
+    .badge { font-size: .72rem; padding: 0 8px; border-radius: 999px; border: 1px solid; }
     .badge.changed { color: var(--pink-light); border-color: var(--pink); }
     .badge.new { color: #a8e6c4; border-color: #6fbf98; }
     .badge.same { color: #8d7f86; border-color: #4a3d44; }
     .badge.skip { color: #ff8fa8; border-color: #b9546e; }
-    .card-body { padding: 0 16px 16px; }
+    .card-body { padding: 0 14px 14px; }
 
-    .cw-field { display: block; margin: 12px 0; font-size: .88rem; }
+    .cw-field { display: block; margin: 10px 0; font-size: .8rem; }
     .cw-field span { display: block; color: var(--pink); margin-bottom: 4px; }
 
-    .tabs { display: flex; gap: 8px; margin: 14px 0 10px; }
-    .tab { padding: 4px 14px; font-size: .82rem; }
+    .tabs { display: flex; gap: 6px; margin: 12px 0 8px; }
+    .tab { padding: 3px 12px; font-size: .76rem; }
     .tab.on { background: rgba(230, 164, 194, .2); border-color: var(--pink); }
     .pane { max-height: 70vh; overflow: auto; padding-right: 4px; }
 
-    .diff-block { border-left: 2px solid rgba(230, 164, 194, .35); padding: 2px 0 2px 12px; margin: 0 0 16px; }
-    .diff .context { color: #7f7078; font-size: .82rem; margin: 0 0 4px; }
-    .diff .para { margin: 0 0 6px; line-height: 1.85; }
+    .diff-block { border-left: 2px solid rgba(230, 164, 194, .35); padding: 2px 0 2px 10px; margin: 0 0 14px; }
+    .diff .context { color: #7f7078; font-size: .76rem; margin: 0 0 3px; }
+    .diff .para { margin: 0 0 5px; line-height: 1.8; }
     .diff del { background: rgba(255, 90, 125, .2); color: #ffb7c6; text-decoration: line-through; text-decoration-color: rgba(255, 183, 198, .7); }
     .diff ins { background: rgba(110, 215, 165, .2); color: #c8f4dc; text-decoration: none; }
 
-    .preview-reader { font-size: min(var(--reader-size, 19px), 17px); }
-    .preview-reader p { margin-bottom: 1em; }
+    .preview-reader { font-size: 15px; line-height: 1.85; }
+    .preview-reader p { margin-bottom: .9em; }
 
-    .done-links { margin: 6px 0 12px; padding-left: 1.2em; }
+    .done-links { margin: 6px 0 10px; padding-left: 1.2em; }
 
     @media (max-width: 560px) {
-      .panel { padding: 16px 14px; }
-      .card-body { padding: 0 12px 14px; }
+      .panel { padding: 14px 12px; }
+      .card-body { padding: 0 10px 12px; }
     }
   </style>
 </head>
@@ -144,65 +146,65 @@
 
   <main class="tool-wrap">
     <header class="tool-head">
-      <h1 class="glow-title">章节工具</h1>
-      <p class="tool-sub">从 Word 复制章节，粘进来，看一眼，发布</p>
+      <h1 class="glow-title">CHAPTER TOOL</h1>
+      <p class="tool-sub">copy chapters from Word · paste · check · publish</p>
     </header>
 
     <section class="panel" id="keyPanel">
-      <h2>1 · GitHub 钥匙</h2>
+      <h2>1 · GitHub key</h2>
       <div id="keySaved" hidden>
-        <p>已连接：<strong id="keyUser"></strong>。钥匙只存在这台设备的这个浏览器里。</p>
-        <button type="button" id="keyForget" class="quiet">删掉钥匙</button>
+        <p>Connected as <strong id="keyUser"></strong>. The key is stored only in this browser on this device.</p>
+        <button type="button" id="keyForget" class="quiet">Remove key</button>
       </div>
       <div id="keyForm">
-        <p>第一次用要放一把钥匙，以后这台设备的这个浏览器就记住了。</p>
+        <p>The first time, add a key. This browser on this device will remember it.</p>
         <details class="howto">
-          <summary>钥匙怎么拿（两分钟）</summary>
+          <summary>How to get a key (about two minutes)</summary>
           <ol>
-            <li>打开 <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub 新建钥匙的页面</a>（要登录）。</li>
-            <li><b>Token name</b> 随便写，比如“章节工具”；<b>Expiration</b> 选最长的。</li>
-            <li><b>Repository access</b> 选 <b>Only select repositories</b>，再选 <code>AMZ-260909.github.io</code>。</li>
-            <li><b>Permissions</b> 里点 <b>Add permissions</b>（或展开 Repository permissions），找到 <b>Contents</b>，改成 <b>Read and write</b>。</li>
-            <li>点最下面的 <b>Generate token</b>，复制那串 <code>github_pat_</code> 开头的字，粘到下面，点保存。</li>
+            <li>Open <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub’s new token page</a> (sign in if asked).</li>
+            <li><b>Token name</b>: anything, e.g. “chapter tool”. <b>Expiration</b>: the longest option.</li>
+            <li><b>Repository access</b>: choose <b>Only select repositories</b>, then pick <code>AMZ-260909.github.io</code>.</li>
+            <li>Under <b>Permissions</b>, click <b>Add permissions</b> (or open <b>Repository permissions</b>), find <b>Contents</b> and set it to <b>Read and write</b>.</li>
+            <li>Click <b>Generate token</b> at the bottom, copy the text that starts with <code>github_pat_</code>, paste it below and click Save.</li>
           </ol>
         </details>
         <div class="row">
           <input type="password" id="keyInput" placeholder="github_pat_…" autocomplete="off" spellcheck="false">
-          <button type="button" id="keySave">保存</button>
+          <button type="button" id="keySave">Save</button>
         </div>
         <p class="msg" id="keyMsg"></p>
       </div>
     </section>
 
     <section class="panel">
-      <h2>2 · 粘贴章节</h2>
-      <textarea id="pasteBox" spellcheck="false" placeholder="在 Word 里选中一章或连着几章，连同“第十章 呦呦鹿鸣”这样的标题行一起复制，粘到这里。"></textarea>
-      <label class="check"><input type="checkbox" id="fixTypo" checked> <span>改撇号：直撇号 ' 换成弯撇号 ’，删掉 ” 后面紧跟中文前的空格（逗号不动）</span></label>
+      <h2>2 · Paste chapters</h2>
+      <textarea id="pasteBox" spellcheck="false" placeholder="In Word, select one chapter or several in a row, including each chapter’s heading line, then copy and paste here."></textarea>
+      <label class="check"><input type="checkbox" id="fixTypo" checked> <span>Fix apostrophes: straight ' becomes curly ’, and a space between a closing ” and the Chinese text right after it is removed (commas are never touched)</span></label>
       <div class="row">
-        <button type="button" id="compareBtn" class="primary">切章并对比</button>
-        <button type="button" id="clearBtn" class="quiet">清空</button>
+        <button type="button" id="compareBtn" class="primary">Split &amp; compare</button>
+        <button type="button" id="clearBtn" class="quiet">Clear</button>
       </div>
       <p class="msg" id="compareMsg"></p>
     </section>
 
     <section class="panel" id="previewPanel" hidden>
-      <h2>3 · 看一眼再发布</h2>
+      <h2>3 · Check, then publish</h2>
       <p id="summary"></p>
       <ul id="warnings" class="warnings"></ul>
       <div id="chapters"></div>
       <label class="check" id="publishedRow" hidden><input type="checkbox" id="lightUp" checked> <span id="lightUpText"></span></label>
       <div class="row">
-        <button type="button" id="publishBtn" class="primary">发布</button>
+        <button type="button" id="publishBtn" class="primary">Publish</button>
       </div>
       <p class="msg" id="publishMsg"></p>
     </section>
 
     <section class="panel" id="donePanel" hidden>
-      <h2>发布好了</h2>
-      <p>网站一般一两分钟后更新，看到的还是旧的就等一下再刷新。</p>
+      <h2>Published</h2>
+      <p>The site usually updates in a minute or two. If a page still shows the old text, wait a little and refresh.</p>
       <ul class="done-links" id="doneLinks"></ul>
-      <p class="note">这次改动：<a id="doneCommit" href="#" target="_blank" rel="noopener">在 GitHub 上看</a>。下次在 VS Code 里改网站之前，先点一下“同步”（Sync / Pull），把这次的改动拉下来。</p>
-      <div class="row"><button type="button" id="undoBtn" class="quiet">撤销刚才这次发布</button></div>
+      <p class="note">This change: <a id="doneCommit" href="#" target="_blank" rel="noopener">view it on GitHub</a>. Before editing the site in VS Code next time, click Sync (or Pull) first to bring this change in.</p>
+      <div class="row"><button type="button" id="undoBtn" class="quiet">Undo this publish</button></div>
       <p class="msg" id="undoMsg"></p>
     </section>
 

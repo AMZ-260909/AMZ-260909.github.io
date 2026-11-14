@@ -37,9 +37,9 @@
 
   // ---------- splitting the pasted text into chapters ----------
 
-  // A heading is its own line: 第十章 呦呦鹿鸣 / 第10章：呦呦鹿鸣 / 第十章
+  // A heading is a line of its own: the chapter marker with a Chinese or Arabic number, then an optional title.
   const HEADING_RE = /^第\s*([0-9０-９零〇一二两三四五六七八九十百千]+)\s*章(?:[\s:：.、·—-]*)(.*)$/;
-  // Prose that happens to start with 第X章 is long or has sentence punctuation.
+  // A prose line that happens to start the same way is long or has sentence punctuation.
   const PROSE_MARKS = /[。，！？；“\u201d"‘\u2019…]/;
 
   function normalizeNewlines(text) {
@@ -82,11 +82,11 @@
     return { chapters, leading: leading.join("\n") };
   }
 
-  // ---------- typography (Aven's 改撇号 rule) ----------
+  // ---------- typography (the apostrophe rule) ----------
 
   // 1) every straight apostrophe becomes ’
   // 2) spaces after a closing ” are removed when Chinese narration follows,
-  //    including narration that opens with a Latin name: “...now.” Georgina却也起身道
+  //    including narration that opens with a Latin name such as Georgina.
   // Nothing else is touched (commas in particular are left alone).
   const CJK = "\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff";
   const NAME = "[A-Za-z][A-Za-z0-9.\\-\\u2019]*";
@@ -139,10 +139,10 @@
 
   function parsePage(html) {
     const open = html.indexOf(TEXT_OPEN);
-    if (open < 0) throw new Error("页面里找不到正文块");
+    if (open < 0) throw new Error("Couldn’t find the chapter text block in this page");
     const start = open + TEXT_OPEN.length;
     const end = html.indexOf(TEXT_CLOSE, start);
-    if (end < 0) throw new Error("页面里的正文块没有结尾");
+    if (end < 0) throw new Error("The chapter text block in this page has no end");
     const h1 = H1_RE.exec(html);
     const cw = CW_RE.exec(html);
     return {
@@ -247,8 +247,8 @@
 
   function unsafeText(paragraphs) {
     const joined = paragraphs.join("\n");
-    if (/<\/script/i.test(joined)) return "正文里有“</script”，网页会被截断，请改掉再发";
-    if (/<!--/.test(joined)) return "正文里有“<!--”，网页可能显示不全，请改掉再发";
+    if (/<\/script/i.test(joined)) return "The text contains “</script”, which would cut the page off. Change it before publishing.";
+    if (/<!--/.test(joined)) return "The text contains “<!--”, which can stop the page from showing in full. Change it before publishing.";
     return "";
   }
 
